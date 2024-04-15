@@ -121,7 +121,7 @@ create_Employee_table()
 create_Members_table()
 create_WaitingList_table()
 
-#insert to tables
+#************ - insert to tables - ************
 def insert_books():
     connection = connect_to_db()
     mycursor = connection.cursor()

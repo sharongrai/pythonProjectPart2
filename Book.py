@@ -84,7 +84,7 @@ class DatabaseManager:
     def register_to_waiting_list(book_id, member_id):
         with DatabaseConnection() as db:
             try:
-                # Check if the BookID already exists in the WaitingList table
+                #check if the BookID already exists in the WaitingList table
                 db.cursor.execute("SELECT MAX(OrderNumber) FROM WaitingList WHERE BookID = %s", (book_id,))
                 max_order_number = db.cursor.fetchone()[0]
                 if max_order_number is None:
@@ -92,7 +92,7 @@ class DatabaseManager:
                 else:
                     order_number = max_order_number + 1
 
-                # Insert into the WaitingList table
+                #insert into the WaitingList table
                 db.cursor.execute("INSERT INTO WaitingList (BookID, MemberID, OrderNumber) VALUES (%s, %s, %s)",
                                   (book_id, member_id, order_number))
                 db.connection.commit()

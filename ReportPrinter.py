@@ -31,11 +31,14 @@ class ReportPrinter:
 class DatabaseManager:
     @staticmethod
     def generate_report(report_type, option, start_date, end_date, month=None, year=None):
-        if option == 1:  # Date range option selected
+        # date range option selected
+        if option == 1:
             start_date = datetime.strptime(start_date, "%Y-%m-%d")
             end_date = datetime.strptime(end_date, "%Y-%m-%d")
-        elif option == 2:  # Month option selected
-            # Set start date to the first day of the selected month and end date to the last day
+
+        #month option selected
+        elif option == 2:
+            #sets start date to first day of the selected month and end date to the last day
             start_date = datetime(int(year), int(month), 1)
             end_date = start_date.replace(day=1, month=start_date.month % 12 + 1) - timedelta(days=1)
 

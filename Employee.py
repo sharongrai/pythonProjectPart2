@@ -75,9 +75,7 @@ class DatabaseManager:
                 (id, password))
             employee_data = db.cursor.fetchone()
             if employee_data:
-                # Assign retrieved data to variables
                 employee_id, name, email, phone, employee_type, password = employee_data
-                # Create and return Employee object
                 return Employee(id=employee_id, name=name, email=email, phone=phone, employee_type=employee_type,
                                 password=password)
             else:
