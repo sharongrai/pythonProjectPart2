@@ -1,5 +1,4 @@
 import mysql.connector
-from collections import Counter
 from datetime import datetime, timedelta
 
 
@@ -28,8 +27,8 @@ class ReportPrinter:
         self.date = date
 
 
+# ************ - report printer management functions - ************
 class DatabaseManager:
-
     @staticmethod
     def generate_report(report_type, option, start_date, end_date, month=None, year=None):
         if option == 1:  # Date range option selected
@@ -54,8 +53,6 @@ class DatabaseManager:
 
     @staticmethod
     def get_loan_records_by_date_range(start_date, end_date):
-        # Implement code to fetch loan records from the database based on the provided date range
-        # For example:
         with DatabaseConnection() as db:
             db.cursor.execute("SELECT * FROM loan WHERE LoanDate BETWEEN %s AND %s", (start_date, end_date))
             return db.cursor.fetchall()

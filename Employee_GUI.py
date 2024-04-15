@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from Employee import DatabaseManager, Employee
 
-
+#add employee window
 class EmployeeDialog(tk.Toplevel):
     def __init__(self, parent, title="Employee Details", initial_values=None):
         super().__init__(parent)
@@ -45,7 +45,7 @@ class EmployeeDialog(tk.Toplevel):
         tk.Button(self, text="OK", command=self.on_ok).grid(row=5, column=0, padx=5, pady=5)
         tk.Button(self, text="Cancel", command=self.cancel).grid(row=5, column=1, padx=5, pady=5)
 
-        self.grab_set()  # Make window modal
+        self.grab_set()
         self.wait_visibility()
         self.focus_set()
 
@@ -71,27 +71,24 @@ class EmployeeDialog(tk.Toplevel):
         self.wait_window()
         return self.result
 
-
+#employee managment window
 class EmployeeManagementGUI:
     def __init__(self, window):
         self.window = window
         self.window.title("Employee Management System")
 
-        # Frame for Treeview and Scrollbar for improved responsiveness
         tree_frame = ttk.Frame(window)
         tree_frame.grid(row=0, column=0, sticky='nsew', padx=10, pady=10)
         tree_frame.grid_columnconfigure(0, weight=1)
         tree_frame.grid_rowconfigure(0, weight=1)
 
-        # Treeview setup
         self.tree = ttk.Treeview(tree_frame, columns=("ID", "Name", "Email", "Phone", "EmployeeType", "Password"), show="headings")
         self.tree.grid(row=0, column=0, sticky='nsew')
-
-        # Scrollbar setup
         scrollbar = ttk.Scrollbar(tree_frame, orient="vertical", command=self.tree.yview)
         scrollbar.grid(row=0, column=1, sticky='ns')
         self.tree.configure(yscroll=scrollbar.set)
 
+        # table headings
         self.tree.heading("ID", text="ID")
         self.tree.heading("Name", text="Name")
         self.tree.heading("Email", text="Email")
@@ -99,22 +96,22 @@ class EmployeeManagementGUI:
         self.tree.heading("EmployeeType", text="Employee Type")
         self.tree.heading("Password", text="Password")
 
-        # Buttons Frame for responsiveness
         btn_frame = ttk.Frame(window)
         btn_frame.grid(row=1, column=0, sticky='ew', padx=10, pady=10)
         window.grid_columnconfigure(0, weight=1)
 
-        # Button labels and corresponding actions
+        # buttons names & action
         button_labels = ['Add', 'Update', 'Delete', 'Refresh']
         actions = [self.add_employee, self.update_employee, self.delete_employee, self.refresh_employee_list]
 
-        # Create buttons with text labels and assign commands
+        # create buttons with text labels and assign actions
         for i, (label, action) in enumerate(zip(button_labels, actions)):
             ttk.Button(btn_frame, text=label, command=action).grid(row=0, column=i, padx=5, pady=5, sticky='ew')
             btn_frame.grid_columnconfigure(i, weight=1)
 
         self.refresh_employee_list()
 
+    # add,update,delete,refresh
     def refresh_employee_list(self):
         for item in self.tree.get_children():
             self.tree.delete(item)

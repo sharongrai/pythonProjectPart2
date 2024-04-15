@@ -28,6 +28,7 @@ class Loan:
         self.returnDate = returnDate
         self.status = status
 
+# ************ - loan management functions - ************
 class DatabaseManager:
     @staticmethod
     def add_loan(loan):

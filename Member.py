@@ -27,6 +27,7 @@ class Member:
         self.membership_type = membership_type
         self.membership_start_date = membership_start_date
 
+# ************ - Member management functions - ************
 class DatabaseManager:
     @staticmethod
     def add_member(member):

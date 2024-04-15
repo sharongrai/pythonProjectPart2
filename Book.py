@@ -38,8 +38,8 @@ class WaitingListEntry:
         self.date_added = date_added
 
 
+# ************ - Book management functions - ************
 class DatabaseManager:
-
     @staticmethod
     def add_book(book):
         if isinstance(book, Book):
@@ -78,10 +78,13 @@ class DatabaseManager:
         with DatabaseConnection() as db:
             db.cursor.execute("DELETE FROM books WHERE BookID = %s", (BookID,))
 
+
+# ************ - Waiting list management functions - ************
     @staticmethod
     def register_to_waiting_list(book_id, member_id):
         with DatabaseConnection() as db:
             try:
+                # Check if the BookID already exists in the WaitingList table
                 db.cursor.execute("SELECT MAX(OrderNumber) FROM WaitingList WHERE BookID = %s", (book_id,))
                 max_order_number = db.cursor.fetchone()[0]
                 if max_order_number is None:
@@ -89,14 +92,15 @@ class DatabaseManager:
                 else:
                     order_number = max_order_number + 1
 
+                # Insert into the WaitingList table
                 db.cursor.execute("INSERT INTO WaitingList (BookID, MemberID, OrderNumber) VALUES (%s, %s, %s)",
                                   (book_id, member_id, order_number))
+                db.connection.commit()
+                messagebox.showinfo("Success", "Registered for waiting list successfully!")
 
             except Exception as e:
+                db.connection.rollback()
                 messagebox.showerror("Error", f"Failed to register for waiting list: {e}")
-
-
-    #waiting list functions
 
     def add_to_waiting_list(self, book_id, title, member_id):
         with DatabaseConnection() as db:

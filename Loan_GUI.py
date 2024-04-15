@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from Loan import DatabaseManager, Loan
 
-
+#add loan window
 class LoanDialog(tk.Toplevel):
     def __init__(self, parent, title="Loan Details", initial_values=None):
         super().__init__(parent)
@@ -14,7 +14,7 @@ class LoanDialog(tk.Toplevel):
 
         self.result = None
 
-        # Setup fields
+        # add loan fields
         tk.Label(self, text="Book ID:").grid(row=0, column=0, padx=5, pady=5)
         self.book_id_entry = tk.Entry(self)
         self.book_id_entry.grid(row=0, column=1, padx=5, pady=5)
@@ -40,12 +40,7 @@ class LoanDialog(tk.Toplevel):
         self.return_date_entry.grid(row=4, column=1, padx=5, pady=5)
         self.return_date_entry.insert(0, initial_values["returnDate"])
 
-        tk.Label(self, text="Status:").grid(row=5, column=0, padx=5, pady=5)
-        self.status_entry = tk.Entry(self)
-        self.status_entry.grid(row=5, column=1, padx=5, pady=5)
-        self.status_entry.insert(0, initial_values["status"])
-
-        # Setup buttons
+        # ok/cancel buttons
         tk.Button(self, text="OK", command=self.on_ok).grid(row=6, column=0, padx=5, pady=5)
         tk.Button(self, text="Cancel", command=self.cancel).grid(row=6, column=1, padx=5, pady=5)
 
@@ -55,10 +50,11 @@ class LoanDialog(tk.Toplevel):
         self.status_dropdown = ttk.Combobox(self, textvariable=self.status_var, values=["open", "close", "delay"])
         self.status_dropdown.grid(row=5, column=1, padx=5, pady=5)
 
-        self.grab_set()  # Make window modal
+        self.grab_set()
         self.wait_visibility()
         self.focus_set()
 
+    #ok button pressed
     def on_ok(self):
         book_id = self.book_id_entry.get().strip()
         members_id = self.members_id_entry.get().strip()
@@ -67,12 +63,12 @@ class LoanDialog(tk.Toplevel):
         return_date = self.return_date_entry.get().strip()
         status = self.status_var.get().strip()
 
-
+        #if a field is empty
         if not book_id or not members_id or not loan_date or not due_date or not status:
             messagebox.showerror("Error", "All fields are required.")
             return
 
-        # Check if return date is empty or None
+        # Check if return date is empty/none
         if return_date.lower() == 'none' or not return_date:
             return_date = None
 
@@ -88,19 +84,17 @@ class LoanDialog(tk.Toplevel):
         self.wait_window()
         return self.result
 
-
+#Loan management window
 class LoanManagementGUI:
     def __init__(self, window):
         self.window = window
         self.window.title("Loan Management System")
 
-        # Frame for Treeview and Scrollbar for improved responsiveness
         tree_frame = ttk.Frame(window)
         tree_frame.grid(row=0, column=0, sticky='nsew', padx=10, pady=10)
         tree_frame.grid_columnconfigure(0, weight=1)
         tree_frame.grid_rowconfigure(0, weight=1)
 
-        # Treeview setup
         self.tree = ttk.Treeview(tree_frame, columns=("ID", "BookID", "MembersID", "LoanDate", "DueDate", "ReturnDate", "Status"), show="headings")
         self.tree.grid(row=0, column=0, sticky='nsew')
 
@@ -109,6 +103,7 @@ class LoanManagementGUI:
         scrollbar.grid(row=0, column=1, sticky='ns')
         self.tree.configure(yscroll=scrollbar.set)
 
+        #table headings
         self.tree.heading("ID", text="ID")
         self.tree.heading("BookID", text="BookID")
         self.tree.heading("MembersID", text="MembersID")
@@ -117,7 +112,6 @@ class LoanManagementGUI:
         self.tree.heading("ReturnDate", text="ReturnDate")
         self.tree.heading("Status", text="Status")
 
-        # Buttons Frame for responsiveness
         btn_frame = ttk.Frame(window)
         btn_frame.grid(row=1, column=0, sticky='ew', padx=10, pady=10)
         window.grid_columnconfigure(0, weight=1)
@@ -125,17 +119,18 @@ class LoanManagementGUI:
                                                                                    sticky='ew')
         btn_frame.grid_columnconfigure(4, weight=1)
 
-        # Button labels and corresponding actions
+        # buttons names & action
         button_labels = ['Add Loan', 'Update Loan', 'Refresh']
         actions = [self.add_loan, self.update_loan, self.refresh_loan_list]
 
-        # Create buttons with text labels and assign commands
+        # create buttons with text labels and assign actions
         for i, (label, action) in enumerate(zip(button_labels, actions)):
             ttk.Button(btn_frame, text=label, command=action).grid(row=0, column=i, padx=5, pady=5, sticky='ew')
             btn_frame.grid_columnconfigure(i, weight=1)
 
         self.refresh_loan_list()
 
+    # add,update,refresh,search
     def refresh_loan_list(self):
         for item in self.tree.get_children():
             self.tree.delete(item)
@@ -158,7 +153,7 @@ class LoanManagementGUI:
     def update_view(self, loans):
         self.tree.delete(*self.tree.get_children())
 
-        # Reconfigure column headings for loan data
+        #columns names
         self.tree.config(columns=("ID", "BookID", "MembersID", "LoanDate", "DueDate", "ReturnDate", "Status"))
         self.tree.heading("ID", text="ID")
         self.tree.heading("BookID", text="BookID")
@@ -168,7 +163,7 @@ class LoanManagementGUI:
         self.tree.heading("ReturnDate", text="Return Date")
         self.tree.heading("Status", text="Status")
 
-        # Insert new loan data
+        #insert new loan data
         for loan in loans:
             self.tree.insert('', 'end', values=(
                 loan.id, loan.bookID, loan.membersID, loan.loanDate, loan.dueDate, loan.returnDate, loan.status))
@@ -190,7 +185,7 @@ class LoanManagementGUI:
             dialog = LoanDialog(self.window, "Update Loan", initial_values)
             result = dialog.show()
             if result:
-                # Check if return date is empty or None
+                # Check if return date is empty/none
                 return_date = result["returnDate"] if result["returnDate"] else None
 
                 loan = Loan(result["bookID"], result["membersID"], result["loanDate"],
@@ -201,13 +196,14 @@ class LoanManagementGUI:
             messagebox.showwarning("Warning", "Please select a loan to update.")
 
 
+#search window popup
 class SearchDialog(tk.Toplevel):
     def __init__(self, parent, title="Search Loan"):
         super().__init__(parent)
         self.transient(parent)
         self.title(title)
 
-        # Setup fields
+        # search field & button
         tk.Label(self, text="Enter keyword:").grid(row=0, column=0, padx=5, pady=5)
         self.search_entry = tk.Entry(self)
         self.search_entry.grid(row=0, column=1, padx=5, pady=5)
@@ -216,22 +212,21 @@ class SearchDialog(tk.Toplevel):
         self.search_entry.bind("<FocusIn>", self.on_entry_click)
         self.search_entry.bind("<FocusOut>", self.on_focus_out)
 
-        # Setup buttons
         tk.Button(self, text="Search", command=self.on_search).grid(row=1, column=0, columnspan=2, padx=5, pady=5)
 
-        self.grab_set()  # Make window modal
+        self.grab_set()
         self.wait_visibility()
         self.focus_set()
 
     def on_entry_click(self, event):
         if self.search_entry.get() == "write something":
             self.search_entry.delete(0, "end")
-            self.search_entry.config(fg='black')  # Change text color to black
+            self.search_entry.config(fg='black')
 
     def on_focus_out(self, event):
         if not self.search_entry.get():
             self.search_entry.insert(0, "write something")
-            self.search_entry.config(fg='grey')  # Change text color to grey
+            self.search_entry.config(fg='grey')
 
     def on_search(self):
         query = self.search_entry.get().strip()

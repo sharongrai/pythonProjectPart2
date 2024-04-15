@@ -28,6 +28,7 @@ class Employee:
         self.employee_type = employee_type
         self.password = password
 
+#add,update,search,delete,authenticate
 class DatabaseManager:
     @staticmethod
     def add_employee(employee):
